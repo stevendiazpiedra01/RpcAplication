@@ -1,6 +1,6 @@
 from xmlrpc.client import ServerProxy
 
 s= ServerProxy('http://localhost:20064', allow_none=True)
-suma = s.suma(6,6)
+insertar = s.insertar()
 
-print ('Hola care monsa %s' %suma)
+print ('Hola care monda %s' %insertar)
