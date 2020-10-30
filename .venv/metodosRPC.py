@@ -18,7 +18,7 @@ class metodosRPC:
         conn = sqlite3.connect('./Sql/dbMadrid.db')
 
         conn.execute("INSERT INTO empleados (numeroDocumento,idTipoDocumento_FK,nombres,apellidos,idTipoEmpleado_FK) "
-             "VALUES (1032500168, '1', 'Dayann', 'Useche', '2')")
+             "VALUES (1032500189, '1', 'Dayanna', 'Useche', '2')")
         conn.commit()
         conn.close()
         return nombre
