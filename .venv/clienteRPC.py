@@ -1,19 +1,18 @@
-
-
+from metodosRPC import metodosRPC
 from xmlrpc.client import ServerProxy
 from tkinter import ttk
 from tkinter import *
 from tkinter.ttk import Combobox
 
 import sqlite3
-
+metodos = metodosRPC()
 s= ServerProxy('http://localhost:20064', allow_none=True)
 class guiMetodos:
-    db_name = './Sql/dbMadrid.db'
+    db_name = '../Sql/dbMadrid.db'
     def __init__(self, window):
         # Initializations 
         self.wind = window
-        self.wind.title('Products Application')
+        self.wind.title('Registro de Clientes')
 
         # Creating a Frame Container 
         frame = LabelFrame(self.wind, text = 'Registrar Nuevo Empleado')
@@ -26,7 +25,7 @@ class guiMetodos:
         self.docu.grid(row = 1, column = 1)
 
         Label(frame, text = 'Tipo de Documento: ').grid(row = 2, column = 0)
-        self.tipDocu = ttk.Combobox(frame, values=['AB', 'BC', 'MB', 'NB', 'NL', 'NS'],width=17,height=1)
+        self.tipDocu = ttk.Combobox(frame, values=['C.C.', 'T.I.', 'C.E.','P.E.'],width=17,height=1)
         self.tipDocu.grid(row = 2, column = 1)
 
         # Nombre Input
@@ -40,12 +39,12 @@ class guiMetodos:
         self.ape.grid(row = 4, column = 1)
 
         Label(frame, text = 'Tipo de Empleado: ').grid(row = 5, column = 0)
-        self.tipEmp = ttk.Combobox(frame, values=['AB', 'BC', 'MB', 'NB', 'NL', 'NS'],width=17,height=1)
+        self.tipEmp = ttk.Combobox(frame, values=['Administración', 'Recepción'],width=17,height=1)
         self.tipEmp.grid(row = 5, column = 1)
         
    
         # Button Add Product 
-        ttk.Button(frame, text = 'Registrar', command = self.reg_usuario).grid(row = 6, columnspan = 2, sticky = W + E)
+        ttk.Button(frame, text = 'Registrar', command = self.reg_emp).grid(row = 6, columnspan = 2, sticky = W + E)
 
         # Output Messages 
         self.message = Label(text = '', fg = 'red')
@@ -68,16 +67,22 @@ class guiMetodos:
 
         # Filling the Rows
         self.consultar_Usuarios()
+     
+   
 
-    # Function to Execute Database Querys
+    # User Input Validation
+    
+    def validation(self):
+        return len(self.docu.get()) != 0 and len(self.tipDocu.get()) != 0 and len(self.nom.get()) != 0 and len(self.ape.get()) != 0 and len(self.tipEmp.get()) != 0
+    
     def run_query(self, query, parameters = ()):
-        with sqlite3.connect(self.db_name) as conn:
+        db_name = './Sql/dbMadrid.db' 
+        with sqlite3.connect(db_name) as conn:
             cursor = conn.cursor()
             result = cursor.execute(query, parameters)
             conn.commit()
         return result
 
-    # Get Products from Database
     def consultar_Usuarios(self):
         # cleaning Table 
         records = self.tree.get_children()
@@ -90,16 +95,14 @@ class guiMetodos:
         for row in db_rows:
             self.tree.insert('', 3, text = row[0], values = (row[1],row[2],row[3],row[4]))
 
-
-    # User Input Validation
-    def validation(self):
-        return len(self.docu.get()) != 0 and len(self.tipDocu.get()) != 0 and len(self.nom.get()) != 0 and len(self.ape.get()) != 0 and len(self.tipDocu.get()) != 0
-
-    def reg_usuario(self):
+   
+    def reg_emp(self):
+       
+            
         if self.validation():
-            query = 'INSERT INTO empleados VALUES(?, ?, ?, ?, ?)'
-            parameters =  (self.docu.get(), self.tipDocu.get(), self.nom.get(), self.ape.get(), self.tipEmp.get())
-            self.run_query(query, parameters)
+            tipEmpAux = s.tipEmp(self.tipEmp.get())
+            tipDocAux = s.tipDoc(self.tipDocu.get())
+            s.reg_usuario(self.docu.get(), tipDocAux, self.nom.get(), self.ape.get(), tipEmpAux)
             self.message['text'] = 'Empleado {} Agregado Satisfactoriamente'.format(self.nom.get())
             self.docu.delete(0, END)
             self.tipDocu.delete(0, END)
@@ -109,7 +112,21 @@ class guiMetodos:
         else:
             self.message['text'] = 'OJO, Datos Requeridos'
         self.consultar_Usuarios()
-    
+    '''    def reg_usuario(self):
+        if self.validation():
+            query = 'INSERT INTO empleados VALUES(?, ?, ?, ?, ?)'
+            parameters =  (self.docu.get(), self.tipDocu.get(), self.nom.get(), self.ape.get(), self.tipEmp.get())
+            self.s.run_query(query, parameters)
+            self.message['text'] = 'Empleado {} Agregado Satisfactoriamente'.format(self.nom.get())
+            self.docu.delete(0, END)
+            self.tipDocu.delete(0, END)
+            self.nom.delete(0, END)
+            self.ape.delete(0, END)
+            self.tipEmp.delete(0, END)
+        else:
+            self.message['text'] = 'OJO, Datos Requeridos'
+        self.consultar_Usuarios()
+
     def delete_product(self):
         self.message['text'] = ''
         try:
@@ -123,9 +140,10 @@ class guiMetodos:
         self.run_query(query, (nomb, ))
         self.message['text'] = 'Record {} deleted Successfully'.format(nomb)
         self.consultar_Usuarios()
-
+    '''
      
-        
+    def delete_product(self):
+        return 0  
     def edit_product(self):
         return 0
 

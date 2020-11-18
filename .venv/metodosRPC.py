@@ -1,44 +1,39 @@
-from xmlrpc.server import SimpleXMLRPCServer
 import sqlite3
-
+from tkinter import messagebox
 class metodosRPC:
+    def run_query(self, query, parameters = ()):
+        db_name = './Sql/dbMadrid.db' 
+        with sqlite3.connect(db_name) as conn:
+            cursor = conn.cursor()
+            result = cursor.execute(query, parameters)
+            conn.commit()
+        return result
 
     
-    _metodos_rpc = ['insertar','mostrar']
-
-    def __init__(self, direccion):
-        self._datos = {}
-        self._servidor = SimpleXMLRPCServer(direccion, allow_none=True)
-
-        for metodo in self._metodos_rpc:
-            self._servidor.register_function(getattr(self, metodo))  
+    
+    # Function to Execute Database Querys
+    def reg_usuario(self, docu, tipDocu, nom, ape, tipEmp):
+        query = 'INSERT INTO empleados VALUES(?, ?, ?, ?, ?)'
+        parameters =  ( docu, tipDocu, nom, ape, tipEmp)
+        self.run_query(query, parameters)
             
-    def insertar(self, numDoc, tipoDoc, nom, ape, tipoEmp):
-        conn = sqlite3.connect('./Sql/dbMadrid.db')
+    def tipEmp(self,tip):
+        if (tip == 'Administración'):
+            tip = 1
+        elif(tip == 'Recepción'):
+            tip = 2
+        return tip
 
-        dbQuery = ( 'INSERT INTO empleados (numeroDocumento,idTipoDocumento_FK,nombres,apellidos,idTipoEmpleado_FK)' 
-                    'VALUES (:numeroDocumento,:idTipoDocumento_FK,:nombres,:apellidos,:idTipoEmpleado_FK);')
-        guardarDatos = {
-            'numeroDocumento':numDoc,
-            'idTipoDocumento_FK':tipoDoc,
-            'nombres':nom,
-            'apellidos':ape,
-            'idTipoEmpleado_FK':tipoEmp
-        }
-        
-        conn.execute(dbQuery, guardarDatos)
-        conn.commit()
-        print("Record inserted successfully into Laptop table")
-        conn.close()
-    
-    def mostrar(self):
-        conn = sqlite3.connect('./Sql/dbMadrid.db')
-        cursor = conn.execute("SELECT * from empleados")
-        aux = cursor
-        return aux.fetchall() 
-        
-        
-    
+    def tipDoc(self,tip):
+        if (tip == 'C.C.'):
+            tip = 1
+        elif(tip == 'T.I.'):
+            tip = 2
+        elif(tip == 'C.E.'):
+            tip = 3
+        elif(tip == 'P.E.'):
+            tip = 4
+        return tip
     
     def iniciar_servidor(self):
         self._servidor.serve_forever()
