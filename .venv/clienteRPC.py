@@ -75,8 +75,8 @@ class clienteRpc:
 
         # Buttons
         ttk.Button(self.wind,text = 'ACTUALIZAR REGISTRO', command = self.consultarReg).grid(row = 10, columnspan = 10, sticky = W + E)
-        ttk.Button(self.wind,text = 'DELETE', command = self.delete_product).grid(row = 5, column = 0, sticky = W + E)
-        ttk.Button(self.wind,text = 'EDIT', command = self.edit_product).grid(row = 5, column = 1, sticky = W + E)
+        ttk.Button(self.wind,text = 'DELETE', command = self.borrar_Emp).grid(row = 5, column = 0, sticky = W + E)
+        ttk.Button(self.wind,text = 'EDIT', command = self.edit_Emp).grid(row = 5, column = 1, sticky = W + E)
         ttk.Button(self.wind,text = 'CERRAR', command = self.quit).grid(row = 11, columnspan = 2, sticky = W + E)
 
         # Filling the Rows
@@ -172,7 +172,7 @@ class clienteRpc:
         self.consultar_Usuarios()
 
    
-    def delete_product(self):
+    def borrar_Emp(self):
         self.message['text'] = ''
         try:
            self.tree.item(self.tree.selection())['text'][0]
@@ -186,8 +186,10 @@ class clienteRpc:
         self.consultar_Usuarios()
  
 
-    def edit_product(self):
+    def edit_Emp(self):
         return 0
+
+        
 
 if __name__ == '__main__':
     window = Tk()
