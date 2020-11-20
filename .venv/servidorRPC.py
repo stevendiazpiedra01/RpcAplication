@@ -1,7 +1,7 @@
 from metodosRPC import metodosRPC
 from xmlrpc.server import SimpleXMLRPCServer
 class servidor(metodosRPC):
-    _metodos_rpc = ['run_query','reg_usuario','tipEmp','tipDoc']
+    _metodos_rpc = ['run_query','reg_usuario','del_Emp','metodoEncriptacion','metodoDesencriptacion']
     db_name = '../Sql/dbMadrid.db' 
     def __init__(self, direccion):
         self._datos = {}
