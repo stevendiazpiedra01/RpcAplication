@@ -9,6 +9,7 @@ from clienteRPC import clienteRpc
 
 metodos = metodosRPC()
 class LoginInicial:
+    print('ven')
     def __init__(self, window):
         # Initializations
         self.wind = window
