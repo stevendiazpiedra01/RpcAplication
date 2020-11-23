@@ -205,7 +205,7 @@ class clienteRpc:
         return ''.join(hour)
 
     # metodo que debe ejecutar el cliente ->
-    # proxy.test(randomDate(), randomHour(), randomHour(), random.randint(1, 3), random.randint(1, 3))
+    # proxy.insertRango(randomDate(), randomHour(), randomHour(), random.randint(1, 3), random.randint(1, 3))
         
 
 if __name__ == '__main__':
