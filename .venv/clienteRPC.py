@@ -2,8 +2,11 @@ from metodosRPC import metodosRPC
 from xmlrpc.client import ServerProxy
 from tkinter import ttk
 from tkinter import *
+from datetime import date
 
+import random
 import sqlite3
+
 metodos = metodosRPC()
 s= ServerProxy('http://localhost:20064', allow_none=True)
 
@@ -188,7 +191,21 @@ class clienteRpc:
 
     def edit_Emp(self):
         return 0
+    
+    """ REGISTRO TELEFONICO""""
 
+    def randomDate(self):
+        start_dt = date.today().replace(day=1, month=1).toordinal()
+        end_dt = date.today().toordinal()
+        random_day = date.fromordinal(random.randint(start_dt, end_dt))
+        return random_day
+
+    def randomHour(self):
+        hour = str(random.randint(0, 24)), ':', str(random.randint(0, 59))
+        return ''.join(hour)
+
+    # metodo que debe ejecutar el cliente ->
+    # proxy.insertRango(randomDate(), randomHour(), randomHour(), random.randint(1, 3), random.randint(1, 3))
         
 
 if __name__ == '__main__':
