@@ -2,7 +2,7 @@ from metodosRPC import metodosRPC
 from xmlrpc.server import SimpleXMLRPCServer
 class servidor(metodosRPC):
     # metodo para agregar registro -> insertRegistro
-    _metodos_rpc = ['run_query','reg_usuario','del_Emp','metodoEncriptacion','metodoDesencriptacion', 'insertRegistro']
+    _metodos_rpc = ['reg_usuario','del_Emp','metodoEncriptacion','metodoDesencriptacion', 'insertRegistro']
     db_name = '../Sql/dbMadrid.db' 
     def __init__(self, direccion):
         self._datos = {}

@@ -3,9 +3,9 @@ from xmlrpc.client import ServerProxy
 from tkinter import ttk
 from tkinter import *
 from datetime import date
+import mysql
 
 import random
-import sqlite3
 
 metodos = metodosRPC()
 s= ServerProxy('http://localhost:20064', allow_none=True)
@@ -14,6 +14,11 @@ s= ServerProxy('http://localhost:20064', allow_none=True)
 class clienteRpc:
     db_name = '../Sql/dbMadrid.db'
     def __init__(self, window):
+        self.cnx = mysql.connector.connect(user= self.__user__, password= self.__password__,
+                              host= self.__host__,
+                              database=self.__database__)
+        self.cursor = self.cnx.cursor()
+        print("Conexion establecida.")
         # Initializations 
         self.wind = window
         self.wind.title('Registro de Clientes')
@@ -92,13 +97,29 @@ class clienteRpc:
     def validation(self):
         return len(self.docu.get()) != 0 and len(self.tipDocu.get()) != 0 and len(self.nom.get()) != 0 and len(self.ape.get()) != 0 and len(self.tipEmp.get()) != 0
     
-    def run_query(self, query, parameters = ()):
-        db_name = './Sql/dbMadrid.db' 
-        with sqlite3.connect(db_name) as conn:
-            cursor = conn.cursor()
-            result = cursor.execute(query, parameters)
-            conn.commit()
-        return result
+    """ REGISTRO TELEFONICO """          
+    
+        
+    __user__ = 'root'
+    __password__ = '2020'
+    __host__ = 'localhost'
+    __database__ = 'dbcaso5'
+    
+
+    def run_query(self,query,parametros =()):
+            self.cnx = mysql.connector.connect(user=self.__user__, password=self.__password__,
+                                            host=self.__host__,
+                                            database=self.__database__)
+            self.cursor = self.cnx.cursor()
+            print("Conexion establecida.")
+    
+            self.cursor.execute(query,parametros)
+
+            myresult = self.cursor.fetchall()
+            
+            for x in myresult:
+                print(x) 
+            return myresult
 
     def consultarReg(self):
         self.consultar_Usuarios()
@@ -111,6 +132,7 @@ class clienteRpc:
             self.tree.delete(element)
         # getting data
         query = 'SELECT * FROM empleados'
+        # LITE > print(type(query))
         db_rows = self.run_query(query)
         # filling data
         for row in db_rows:
@@ -184,6 +206,7 @@ class clienteRpc:
             return
         self.message['text'] = ''
         nomb = self.tree.item(self.tree.selection())['text']
+        print (nomb)
         s.del_Emp(nomb)
         self.message['text'] = 'Record {} deleted Successfully'.format(nomb)
         self.consultar_Usuarios()
@@ -192,7 +215,6 @@ class clienteRpc:
     def edit_Emp(self):
         return 0
     
-    """ REGISTRO TELEFONICO""""
 
     def randomDate(self):
         start_dt = date.today().replace(day=1, month=1).toordinal()
@@ -207,8 +229,9 @@ class clienteRpc:
     # metodo que debe ejecutar el cliente ->
     # proxy.insertRango(randomDate(), randomHour(), randomHour(), random.randint(1, 3), random.randint(1, 3))
         
-
 if __name__ == '__main__':
     window = Tk()
     application = clienteRpc(window)
     window.mainloop()
+    
+    
